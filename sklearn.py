@@ -37,3 +37,16 @@ for cluster_id in range(num_clusters):
 # Access class probabilities and other model attributes
 class_probs = [result.predict(X) for result in results]
 class_memberships = [cluster_data.index for cluster_data in df.groupby('cluster').index]
+
+
+
+
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+# Assuming X is your design matrix
+vif = pd.DataFrame()
+vif["Variable"] = X.columns
+vif["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+
+high_vif_variables = vif[vif["VIF"] > 10]["Variable"]
+X_filtered = X.drop(columns=high_vif_variables)
